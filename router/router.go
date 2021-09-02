@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-func Hello(c *context.Context){
+func Hello(c *context.Context) {
 	c.OK(&model.HTTPResponse{
 		Data: "hello world",
 	})
