@@ -1,16 +1,17 @@
 package sdk
 
 import (
-	"net/http"
-
 	"github/http-server/context"
+	"github/http-server/filter"
 	"github/http-server/sdk/handlermapping"
 	"github/http-server/server"
+	"net/http"
 )
 
 type Server struct {
 	Name    string
 	Handler server.Handler
+	Root    filter.Handler
 }
 
 func (s *Server) Route(method, pattern string, hadnler func(c *context.Context)) {
@@ -18,9 +19,24 @@ func (s *Server) Route(method, pattern string, hadnler func(c *context.Context))
 }
 
 func (s *Server) Start(address string) error {
-	return http.ListenAndServe(address, s.Handler)
+	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
+		var c = context.NewContext(rw, r)
+		s.Root(c)
+	})
+	return http.ListenAndServe(address, nil)
 }
 
-func NewHTTPServer() server.Server {
-	return &Server{Name: "sdk server", Handler: handlermapping.New()}
+func NewHTTPServer(name string, fs ...filter.Filter) server.Server {
+	var handler = handlermapping.New()
+	var root = handler.ServeHTTP
+	for i := len(fs)-1; i >= 0; i-- {
+		f := fs[i]
+		root = f(root)
+	}
+
+	return &Server{
+		Name:    name,
+		Handler: handler,
+		Root:    root,
+	}
 }

@@ -12,6 +12,8 @@ type HandlerMappingOnMap struct {
 	Hadnlers map[string]func(c *context.Context)
 }
 
+var _ server.Handler = &HandlerMappingOnMap{}
+
 func New() server.Handler {
 	return &HandlerMappingOnMap{
 		Hadnlers: make(map[string]func(c *context.Context)),
@@ -24,14 +26,14 @@ func (h *HandlerMappingOnMap) Route(method, pattern string, handler func(c *cont
 	h.Hadnlers[key] = handler
 }
 
-func (h *HandlerMappingOnMap) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	var key = h.Key(r.Method, r.URL.Path)
+func (h *HandlerMappingOnMap) ServeHTTP(c *context.Context) {
+	var key = h.Key(c.R.Method, c.R.URL.Path)
 	if handler, ok := h.Hadnlers[key]; ok {
-		c := context.NewContext(w, r)
+		c := context.NewContext(c.W, c.R)
 		handler(c)
 	} else {
-		w.WriteHeader(http.StatusNotFound)
-		_, _ = fmt.Fprint(w, "not any router math")
+		c.W.WriteHeader(http.StatusNotFound)
+		_, _ = fmt.Fprint(c.W, "not any router math")
 	}
 }
 

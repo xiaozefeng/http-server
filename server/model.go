@@ -2,7 +2,6 @@ package server
 
 import (
 	"github/http-server/context"
-	"net/http"
 )
 
 type Server interface {
@@ -11,7 +10,7 @@ type Server interface {
 }
 
 type Handler interface {
-	http.Handler
+	ServeHTTP(c*context.Context)
 	Routable
 }
 
