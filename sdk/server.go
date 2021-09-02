@@ -14,7 +14,7 @@ type Server struct {
 	Root    filter.Handler
 }
 
-func (s *Server) Route(method, pattern string, hadnler func(c *context.Context)) {
+func (s *Server) Route(method, pattern string, hadnler server.HandlerFunc) {
 	s.Handler.Route(method, pattern, hadnler)
 }
 

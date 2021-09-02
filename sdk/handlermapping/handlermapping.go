@@ -20,7 +20,7 @@ func New() server.Handler {
 	}
 }
 
-func (h *HandlerMappingOnMap) Route(method, pattern string, handler func(c *context.Context)) {
+func (h *HandlerMappingOnMap) Route(method, pattern string, handler server.HandlerFunc) {
 	var key = h.Key(method, pattern)
 	log.Printf("register route, method:%s, path:%s", method, pattern)
 	h.Hadnlers[key] = handler
