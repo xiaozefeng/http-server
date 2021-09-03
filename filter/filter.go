@@ -1,8 +1,8 @@
 package filter
 
 import (
-	"fmt"
 	"github/http-server/context"
+	"log"
 	"time"
 )
 
@@ -28,6 +28,6 @@ func MetricFilterBuilder(successor Handler) Handler {
 	return func(c *context.Context) {
 		start := time.Now()
 		successor(c)
-		fmt.Printf("requst method:%s, request url:%s ,spent %d \n", c.R.Method, c.R.URL, time.Since(start).Microseconds())
+		log.Printf("requst method:%s, request url:%s ,spent %d \n", c.R.Method, c.R.URL, time.Since(start).Microseconds())
 	}
 }
