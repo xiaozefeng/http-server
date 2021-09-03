@@ -10,10 +10,11 @@ import (
 
 func main() {
 
-	var filters = []filter.Filter{ filter.MetricFilterBuilder}
+	var filters = []filter.Filter{ filter.MetricFilter}
 	s := sdk.NewHTTPServer("http-server", filters...)
 
 	s.Route(http.MethodPost, "/signup", router.SignUp)
+	s.Route(http.MethodGet, "/signup/hello/*", router.Hello)
 	s.Route(http.MethodGet, "/hello", router.Hello)
 
 	log.Print("start http server on address 8080\n")

@@ -22,9 +22,9 @@ func NewFilterChain(filters ...Filter) *FilterChain {
 	}
 }
 
-var _ Filter = MetricFilterBuilder
+var _ Filter = MetricFilter
 
-func MetricFilterBuilder(successor Handler) Handler {
+func MetricFilter(successor Handler) Handler {
 	return func(c *context.Context) {
 		start := time.Now()
 		successor(c)
