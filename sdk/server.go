@@ -3,8 +3,8 @@ package sdk
 import (
 	"github/http-server/context"
 	"github/http-server/filter"
-	"github/http-server/sdk/handlermapping"
 	"github/http-server/server"
+	v1 "github/http-server/tree/v1"
 	"net/http"
 )
 
@@ -27,7 +27,8 @@ func (s *Server) Start(address string) error {
 }
 
 func NewHTTPServer(name string, fs ...filter.Filter) server.Server {
-	var handler = handlermapping.New()
+	// var handler = handlermapping.New()
+	var handler = v1.NewHandlerBaseOnTree()
 	var root = handler.ServeHTTP
 	for i := len(fs)-1; i >= 0; i-- {
 		f := fs[i]

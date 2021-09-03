@@ -4,12 +4,25 @@ import (
 	"fmt"
 	"github/http-server/context"
 	"github/http-server/server"
+	"log"
 	"net/http"
 	"strings"
 )
 
 type HandlerBaseOnTree struct {
 	root *node
+}
+// 8ba83d81b8654b201f2f122e196dc91a09bebe5b
+
+const (
+	pathSeparator = "/"
+	rootPath      = "/"
+)
+
+func NewHandlerBaseOnTree() server.Handler {
+	return &HandlerBaseOnTree{
+		root: &node{path: rootPath},
+	}
 }
 
 func (h *HandlerBaseOnTree) ServeHTTP(c *context.Context) {
@@ -37,12 +50,13 @@ func (h *HandlerBaseOnTree) ServeHTTP(c *context.Context) {
 }
 
 func processURL(path string) []string {
-	url := strings.Trim(path, "/")
-	paths := strings.Split(url, "/")
+	url := strings.Trim(path, pathSeparator)
+	paths := strings.Split(url, pathSeparator)
 	return paths
 }
 
 func (h *HandlerBaseOnTree) Route(method string, pattern string, handler server.HandlerFunc) {
+	log.Printf("register route, path: %s", pattern)
 	paths := processURL(pattern)
 	cur := h.root
 
