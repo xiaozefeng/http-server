@@ -12,7 +12,6 @@ import (
 type HandlerBaseOnTree struct {
 	root *node
 }
-// 8ba83d81b8654b201f2f122e196dc91a09bebe5b
 
 const (
 	pathSeparator = "/"
@@ -26,27 +25,28 @@ func NewHandlerBaseOnTree() server.Handler {
 }
 
 func (h *HandlerBaseOnTree) ServeHTTP(c *context.Context) {
-	paths := processURL(c.R.URL.Path)
+	// handle request
+	if matchedHandler := h.findRouter(c.R.URL.Path); matchedHandler != nil {
+		matchedHandler(c)
+	} else {
+		c.W.WriteHeader(http.StatusNotFound)
+		fmt.Fprint(c.W, "not found\n")
+	}
+}
+
+func (h *HandlerBaseOnTree) findRouter(urlPath string) server.HandlerFunc {
+	paths := processURL(urlPath)
 	cur := h.root
 
 	for _, path := range paths {
-		if matchedNode := cur.findMatchChild(path); matchedNode == nil {
-			c.W.WriteHeader(http.StatusNotFound)
-			fmt.Fprint(c.W, "not found")
-			return
+		if matchedHandler := cur.findMatchChild(path); matchedHandler == nil {
+			// not found
+			return nil
 		} else {
-			cur = matchedNode
+			cur = matchedHandler
 		}
 	}
-
-	if cur.hadnler == nil {
-		c.W.WriteHeader(http.StatusNotFound)
-		fmt.Fprint(c.W, "not found")
-		return
-	}
-
-	// handle request
-	cur.hadnler(c)
+	return cur.hadnler
 }
 
 func processURL(path string) []string {
