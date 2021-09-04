@@ -2,6 +2,7 @@ package main
 
 import (
 	"github/http-server/filter"
+	"github/http-server/hook"
 	"github/http-server/router"
 	"github/http-server/sdk"
 	"log"
@@ -17,7 +18,7 @@ func main() {
 	s := sdk.NewHTTPServer("http-server", filters...)
 
 	s.Route(http.MethodPost, "/signup", router.SignUp)
-	s.Route(http.MethodGet, "/signup/hello/*", router.Hello)
+	s.Route(http.MethodPost, "/hello", router.SignUp)
 	s.Route(http.MethodGet, "/hello", router.Hello)
 
 	log.Print("start http server on address 8080\n")
@@ -33,7 +34,7 @@ func main() {
 
 func WaitForShutdown() {
 	signChan := make(chan os.Signal, 1)
-	signal.Notify(signChan)
+	signal.Notify(signChan, hook.ShutdownSignals...)
 
 	for {
 		select {

@@ -10,10 +10,15 @@ import (
 type Context struct {
 	W http.ResponseWriter
 	R *http.Request
+	PathParams map[string]string
 }
 
 func NewContext(w http.ResponseWriter, r *http.Request) *Context {
-	return &Context{W: w, R: r}
+	return &Context{W: w, R: r, PathParams: make(map[string]string, 1)}
+}
+
+func NewEmptyContext() *Context {
+	return &Context{}
 }
 
 func (c *Context) ReadJson(obj interface{}) error {
@@ -41,4 +46,10 @@ func (c *Context) OK(res *model.HTTPResponse) error {
 
 func (c *Context) BadRequest() error {
 	return c.WriteResponse(http.StatusBadRequest, nil)
+}
+
+func (c *Context) Reset(w http.ResponseWriter, r *http.Request) {
+	c.W = w
+	c.R = r
+	c.PathParams = make(map[string]string, 1)
 }

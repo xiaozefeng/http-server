@@ -1,5 +1,11 @@
 package hook
 
+import (
+	"context"
+	"os"
+	"syscall"
+)
+
 // import (
 // 	"context"
 // 	"errors"
@@ -11,7 +17,13 @@ package hook
 // 	"time"
 // )
 
-// type Hook func(context.Context) error
+var ShutdownSignals = []os.Signal{
+	os.Interrupt, os.Kill, syscall.SIGKILL, syscall.SIGSTOP,
+	syscall.SIGHUP, syscall.SIGINT, syscall.SIGQUIT, syscall.SIGILL, syscall.SIGTRAP,
+	syscall.SIGABRT, syscall.SIGSYS, syscall.SIGTERM,
+}
+
+type Hook func(context.Context) error
 
 // func BuildHook(servers ...server.Server) Hook {
 // 	return func(c context.Context) error {
