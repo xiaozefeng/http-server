@@ -20,6 +20,7 @@ func main() {
 	s.Route(http.MethodPost, "/signup", router.SignUp)
 	s.Route(http.MethodPost, "/hello", router.SignUp)
 	s.Route(http.MethodGet, "/hello", router.Hello)
+	s.Route(http.MethodGet, "/path/:name/name", router.GetPath)
 
 	log.Print("start http server on address 8080\n")
 

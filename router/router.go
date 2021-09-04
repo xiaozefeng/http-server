@@ -13,6 +13,14 @@ func Hello(c *context.Context) {
 	})
 }
 
+func GetPath(c *context.Context) {
+	var name = c.PathParams["name"]
+	log.Printf("get path param: %s\n", name)
+	c.OK(&model.HTTPResponse{
+		Data: "path:" + name,
+	})
+}
+
 func SignUp(c *context.Context) {
 	var sr SignupReq
 	err := c.ReadJson(&sr)
