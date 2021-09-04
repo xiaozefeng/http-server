@@ -38,8 +38,8 @@ func (h *HandlerBaseOnTree) validatePattern(pattern string) error {
 
 func (h *HandlerBaseOnTree) ServeHTTP(c *context.Context) {
 	// handle request
-	if matchedHandler := h.findRouter(c.R.URL.Path); matchedHandler != nil {
-		matchedHandler(c)
+	if handler := h.findRouter(c.R.URL.Path); handler != nil {
+		handler(c)
 	} else {
 		c.W.WriteHeader(http.StatusNotFound)
 		fmt.Fprint(c.W, "not found\n")
